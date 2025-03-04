@@ -270,100 +270,130 @@ static NSArray *properties = nil;
 }
 
 - (void)updateDirectory {
-	NSError *error = nil;
-	NSString *fPath = [self fullPath];
-	NSMutableArray *array = [NSMutableArray new];
-	NSArray *temp = [self readDirectory:fPath error:&error];
-	if (temp == nil) {
-		if ([error code] == NSFileReadNoPermissionError)	return;
-		fPath = getTarget(fPath);	// Possible Symlink or Alias
-		if (fPath)
-			temp = [self readDirectory:fPath  error:nil];
-		if (temp == nil)	return;
-	}
-	[array setArray:temp];
-	NSMutableArray *itemsToRemove = [NSMutableArray new];
-
-	// compare logged files with array
-	for (FileItem *element in _files) {
-		BOOL found = NO;
-		NSURL *url = nil;
-		NSString *dir = [element relativePath];
-		for (url in array) {
-			if ([dir compare:[url lastPathComponent] options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-				found = YES;
-				NSDate * tempDate;
-				[url getResourceValue:&tempDate forKey:NSURLContentModificationDateKey error:nil];
-				if([element.wDate isEqualToDate:tempDate]) {}
-				else {
-					element.wDate = tempDate;
-					if (element.isPackage) {
-						dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
-						dispatch_async(aQueue, ^{
-							element.fileSize = folderSize(element.url);
-						});
-					} else {
-						NSNumber *size;
-						[url getResourceValue:&size forKey:NSURLFileSizeKey error:nil];
-						element.fileSize = size;
-					}
-				}
-				break;
-			}
+    @synchronized(self) {
+        NSError *error = nil;
+        NSString *fPath = [self fullPath];
+        if (!fPath) return;
+        
+        NSMutableArray *array = [NSMutableArray new];
+        NSArray *temp = [self readDirectory:fPath error:&error];
+        
+        if (temp == nil) {
+            if ([error code] == NSFileReadNoPermissionError) return;
+            fPath = getTarget(fPath);    // Possible Symlink or Alias
+            if (fPath) {
+                temp = [self readDirectory:fPath error:nil];
+            }
+            if (temp == nil) return;
         }
-		if(found) {
-			[array removeObject:url];
-		} else {
-			[itemsToRemove addObject:element];	// add element to itemsToRemove
-		}
-	}
-
-	if([itemsToRemove count]) {
-		[_files removeObjectsInArray:itemsToRemove];
-		[itemsToRemove removeAllObjects];
-	}
-
-	// compare logged subDirectories with array
-	for (DirectoryItem *element in _subDirectories) {
-		BOOL found = NO;
-		NSURL *url = nil;
-		NSString *dir = [element relativePath];
-		for (url in array) {
-			if ([dir compare:[url lastPathComponent] options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-				found = YES;
-				NSDate *tempDate;
-				[url getResourceValue:&tempDate forKey:NSURLContentModificationDateKey error:nil];
-				if(![element.wDate isEqualToDate:tempDate]) {
-					element.wDate = tempDate;
-				}	
-				break;
-			}
-		}
-		if(found) {
-			[array removeObject:url];
-		} else {
-			[itemsToRemove addObject:element];	// add element to itemsToRemove
-		}
-	}
-	if([itemsToRemove count]) {
-		NSMutableArray *dirsRemoved = [NSMutableArray new];
-		for (DirectoryItem *element in itemsToRemove) {
-			[dirsRemoved addObject:[element fullPath]];
-		}
-		[_subDirectories removeObjectsInArray:itemsToRemove];
-		if([_subDirectories count] == 0) {
-			_subDirectories = leafNode;	// in case all subdirs removed
-		}
-		[[NSNotificationCenter defaultCenter] postNotificationName:DirectoryItemDidRemoveDirectoriesNotification object:self
-														  userInfo:[NSDictionary dictionaryWithObject:dirsRemoved
-																							   forKey:@"DirectoriesRemoved"]];
-	}
-	// new items to add
-	if([array count]) {
-		[self setFileAndDirDetails:array];
-	}
-    [_subDirectories sortUsingDescriptors:dirSortDescriptor];
-    [_files sortUsingDescriptors:fileSortDescriptor];
+        
+        [array setArray:temp];
+        NSMutableArray *itemsToRemove = [NSMutableArray new];
+        
+        // Update files
+        @try {
+            for (FileItem *element in _files) {
+                if (![element isKindOfClass:[FileItem class]]) continue;
+                
+                BOOL found = NO;
+                NSURL *url = nil;
+                NSString *dir = [element relativePath];
+                
+                for (url in array) {
+                    if ([dir compare:[url lastPathComponent] options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+                        found = YES;
+                        NSDate *tempDate;
+                        if ([url getResourceValue:&tempDate forKey:NSURLContentModificationDateKey error:nil]) {
+                            if (![element.wDate isEqualToDate:tempDate]) {
+                                element.wDate = tempDate;
+                                if (element.isPackage) {
+                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                                        element.fileSize = folderSize(element.url);
+                                    });
+                                } else {
+                                    NSNumber *size;
+                                    if ([url getResourceValue:&size forKey:NSURLFileSizeKey error:nil]) {
+                                        element.fileSize = size;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                if (found) {
+                    [array removeObject:url];
+                } else {
+                    [itemsToRemove addObject:element];
+                }
+            }
+            
+            if ([itemsToRemove count]) {
+                [_files removeObjectsInArray:itemsToRemove];
+                [itemsToRemove removeAllObjects];
+            }
+        } @catch (NSException *exception) {
+            NSLog(@"Error updating files: %@", exception);
+        }
+        
+        // Update directories
+        @try {
+            for (DirectoryItem *element in _subDirectories) {
+                if (![element isKindOfClass:[DirectoryItem class]]) continue;
+                
+                BOOL found = NO;
+                NSURL *url = nil;
+                NSString *dir = [element relativePath];
+                
+                for (url in array) {
+                    if ([dir compare:[url lastPathComponent] options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+                        found = YES;
+                        NSDate *tempDate;
+                        if ([url getResourceValue:&tempDate forKey:NSURLContentModificationDateKey error:nil]) {
+                            if (![element.wDate isEqualToDate:tempDate]) {
+                                element.wDate = tempDate;
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                if (found) {
+                    [array removeObject:url];
+                } else {
+                    [itemsToRemove addObject:element];
+                }
+            }
+            
+            if ([itemsToRemove count]) {
+                NSMutableArray *dirsRemoved = [NSMutableArray new];
+                for (DirectoryItem *element in itemsToRemove) {
+                    [dirsRemoved addObject:[element fullPath]];
+                }
+                
+                [_subDirectories removeObjectsInArray:itemsToRemove];
+                if ([_subDirectories count] == 0) {
+                    _subDirectories = leafNode;
+                }
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:DirectoryItemDidRemoveDirectoriesNotification 
+                                                                  object:self
+                                                                userInfo:@{@"DirectoriesRemoved": dirsRemoved}];
+            }
+            
+            // Add new items
+            if ([array count]) {
+                [self setFileAndDirDetails:array];
+            }
+            
+            [_subDirectories sortUsingDescriptors:dirSortDescriptor];
+            [_files sortUsingDescriptors:fileSortDescriptor];
+            
+        } @catch (NSException *exception) {
+            NSLog(@"Error updating directories: %@", exception);
+        }
+    }
 }
 - (void)removeDir:(DirectoryItem *)node {
     [_subDirectories removeObject:node];
@@ -385,12 +415,31 @@ static NSArray *properties = nil;
 	}
 }
 - (void)releaseDir {
-    if(!self.isAlias) {
-        for (DirectoryItem *subDir in _subDirectories) {
-			subDir->_subDirectories = NULL;
-			[subDir.files removeAllObjects];
-		}
-	}
+    @synchronized(self) {
+        if(!self.isAlias) {
+            NSLog(@"DirectoryItem: Releasing directory %@", self.relativePath);
+            NSArray *subDirsCopy = [_subDirectories copy];
+            for (DirectoryItem *subDir in subDirsCopy) {
+                if ([subDir isKindOfClass:[DirectoryItem class]]) {
+                    [subDir releaseDir];
+                }
+            }
+            
+            @try {
+                [_subDirectories removeAllObjects];
+                _subDirectories = nil;
+                [_files removeAllObjects];
+                _files = nil;
+            } @catch (NSException *exception) {
+                NSLog(@"Error during directory release: %@", exception);
+            }
+        }
+    }
+}
+
+- (void)dealloc {
+    NSLog(@"DirectoryItem: Deallocating %@", self.relativePath);
+    [self releaseDir];
 }
 
 #pragma mark - Utility Methods
