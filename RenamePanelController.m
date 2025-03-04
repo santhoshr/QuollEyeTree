@@ -18,11 +18,11 @@
 }
 - (IBAction)cancelRename:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSCancelButton];
+	[NSApp stopModalWithCode:NSModalResponseCancel];
 }
 - (IBAction)performRename:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSOKButton];
+	[NSApp stopModalWithCode:NSModalResponseOK];
 }
 - (NSInteger)runModal {
 	NSInteger result = [NSApp runModalForWindow:self.window];

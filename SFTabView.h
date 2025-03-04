@@ -163,13 +163,13 @@
  @param tab A tab contained in the Tab View.
  @return The index whose corresponding tab object is equal to tab. If none of the objects in the tabview is equal to tab, returns NSNotFound.
  */
-- (int) indexOfTab: (CALayer *) tab;
+- (NSInteger) indexOfTab: (CALayer *) tab;
 
 
 /** 
  @brief Returns the number of tab in the Tab View.
  */
-- (int) numberOfTabs;
+- (NSInteger) numberOfTabs;
 
 
 /**
@@ -343,7 +343,7 @@
 - (void)rearrangeInitialTab: (CALayer *) initialTab toLandingTab:(CALayer *) landingTab withCurrentPoint: (CGPoint) currentPoint direction: (BOOL)direction;
 
 - (NSArray *) tabSequenceForStartingTabIndex: (int) startingIndex endingTabIndex: (int) endingIndex direction: (BOOL)direction;
-- (int) startingXOriginForTabAtIndex: (int) index;
+- (NSInteger) startingXOriginForTabAtIndex: (int) index;
 - (CABasicAnimation *) tabMovingAnimation;
 - (NSPoint) deltaFromStartingPoint:(NSPoint)startingPoint endPoint:(NSPoint) endPoint;
 

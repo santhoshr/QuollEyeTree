@@ -16,18 +16,18 @@
 }
 - (void)keyDown:(NSEvent *)theEvent {
 	unichar keyChar = [[theEvent charactersIgnoringModifiers] characterAtIndex:0];
-	if ([theEvent modifierFlags] & NSCommandKeyMask) {
+	if ([theEvent modifierFlags] & NSEventModifierFlagCommand) {
 		if([self.keyDelegate respondsToSelector:@selector(keyCmdPressedInOutlineView:)])
 			if([self.keyDelegate keyCmdPressedInOutlineView:keyChar])
 				return;
 	}
-	if ([theEvent modifierFlags] & NSControlKeyMask) {
+	if ([theEvent modifierFlags] & NSEventModifierFlagControl) {
 		if([self.keyDelegate respondsToSelector:@selector(keyCtlPressedInOutlineView:)])
 			if([self.keyDelegate keyCtlPressedInOutlineView:keyChar])
 				return;
 	}
 	if([self.keyDelegate respondsToSelector:@selector(keyPressedInOutlineView:shifted:)])
-		if([self.keyDelegate keyPressedInOutlineView:keyChar shifted:([theEvent modifierFlags] & NSShiftKeyMask)==NSShiftKeyMask])
+		if([self.keyDelegate keyPressedInOutlineView:keyChar shifted:([theEvent modifierFlags] & NSEventModifierFlagShift)==NSEventModifierFlagShift])
 			return;
 	[super keyDown:theEvent];
 }

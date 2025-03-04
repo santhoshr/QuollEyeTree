@@ -113,7 +113,7 @@ static BOOL createTargetDir(NSString *targetDir, NSFileManager *fileManager) {
 		NSAlert *exists = [NSAlert new];
 		[exists setMessageText:prompt];
 		[exists setInformativeText:@"Do you want to replace it?"];
-		[exists setAlertStyle:NSWarningAlertStyle];
+		[exists setAlertStyle:NSAlertStyleWarning];
 		[exists addButtonWithTitle:@"Replace"];
 		[exists addButtonWithTitle:@"Skip"];
 		[exists addButtonWithTitle:@"Cancel"];
@@ -135,7 +135,7 @@ static BOOL createTargetDir(NSString *targetDir, NSFileManager *fileManager) {
 		NSAlert *exists = [NSAlert new];
 		[exists setMessageText:prompt];
 		[exists setInformativeText:@"Do you want to create it?"];
-		[exists setAlertStyle:NSWarningAlertStyle];
+		[exists setAlertStyle:NSAlertStyleWarning];
 		[exists addButtonWithTitle:@"OK"];
 		[exists addButtonWithTitle:@"Cancel"];
 		NSInteger result = [exists runModal];
@@ -196,7 +196,7 @@ static BOOL createTargetDir(NSString *targetDir, NSFileManager *fileManager) {
 - (void)symlinkTo:(FileSystemItem *)node {
 	[self initCopyPanel:node];
 	[copyPanel setTitle:@"Create Symlink"];
-	if ([copyPanel runModal] == NSOKButton) {
+	if ([copyPanel runModal] == NSModalResponseOK) {
 		NSFileManager *fileManager = [NSFileManager new];
 		targetDirectory = copyPanel.targetDirectory;
 		NSString *target = [targetDirectory stringByAppendingPathComponent:[node.relativePath stringByRenamingingLastPathComponent:copyPanel.filename]];
@@ -315,7 +315,7 @@ static BOOL createTargetDir(NSString *targetDir, NSFileManager *fileManager) {
 - (void)moveTaggedTo:(NSArray *)objectsToMove {
 	[self initTaggedCopyPanel:objectsToMove];
 	[copyPanel setTitle:@"Move Tagged Files"];
-	if ([copyPanel runModal] == NSOKButton) {
+	if ([copyPanel runModal] == NSModalResponseOK) {
 		[self moveObjects:objectsToMove  targetDirectory:copyPanel.targetDirectory movedFilename:copyPanel.filename createDirectories:[copyPanel.createDirectories state] replaceExisting:[copyPanel.replaceExisting state]];
 	}
 	copyPanel = nil;
@@ -326,15 +326,15 @@ static BOOL createTargetDir(NSString *targetDir, NSFileManager *fileManager) {
 		[copyPanel setTitle:@"Move File"];
 	else
 		[copyPanel setTitle:@"Move Directory"];
-	if ([copyPanel runModal] == NSOKButton) {
-		[self moveObjects:[NSArray arrayWithObject:node] targetDirectory:copyPanel.targetDirectory movedFilename:copyPanel.filename createDirectories:[copyPanel.createDirectories state] replaceExisting:[copyPanel.replaceExisting state]];
+	if ([copyPanel runModal] == NSModalResponseOK) {
+		[self moveObjects:@[node] targetDirectory:copyPanel.targetDirectory movedFilename:copyPanel.filename createDirectories:[copyPanel.createDirectories state] replaceExisting:[copyPanel.replaceExisting state]];
 	}
     copyPanel = nil;
 }
 - (void)copyTaggedTo:(NSArray *)objectsToCopy {
 	[self initTaggedCopyPanel:objectsToCopy];
 	[copyPanel setTitle:@"Copy Tagged Files"];
-	if ([copyPanel runModal] == NSOKButton) {
+	if ([copyPanel runModal] == NSModalResponseOK) {
 		[self copyObjects:objectsToCopy  targetDirectory:copyPanel.targetDirectory copiedFilename:copyPanel.filename createDirectories:[copyPanel.createDirectories state] replaceExisting:[copyPanel.replaceExisting state]];
 	}
     copyPanel = nil;
@@ -345,8 +345,8 @@ static BOOL createTargetDir(NSString *targetDir, NSFileManager *fileManager) {
 		[copyPanel setTitle:@"Copy File"];
 	else
 		[copyPanel setTitle:@"Copy Directory"];
-	if ([copyPanel runModal] == NSOKButton) {
-		[self copyObjects:[NSArray arrayWithObject:node]  targetDirectory:copyPanel.targetDirectory copiedFilename:copyPanel.filename createDirectories:[copyPanel.createDirectories state] replaceExisting:[copyPanel.replaceExisting state]];
+	if ([copyPanel runModal] == NSModalResponseOK) {
+		[self copyObjects:@[node]  targetDirectory:copyPanel.targetDirectory copiedFilename:copyPanel.filename createDirectories:[copyPanel.createDirectories state] replaceExisting:[copyPanel.replaceExisting state]];
 	}
     copyPanel = nil;
 }
@@ -357,7 +357,7 @@ static BOOL createTargetDir(NSString *targetDir, NSFileManager *fileManager) {
 //%5 - the file's extension
 - (void)batchForTagged:(NSArray *)objectsForBatch {
 	[self initTaggedBatchPanel:objectsForBatch];
-	if ([batchPanel runModal] == NSOKButton) {
+	if ([batchPanel runModal] == NSModalResponseOK) {
 		NSFileManager *fileManager = [NSFileManager new];
 		const char *filename = [fileManager fileSystemRepresentationWithPath:[batchPanel.targetDirectory stringByAppendingPathComponent:batchPanel.batchFileName.stringValue]];
 		FILE *fp = fopen(filename, "w");
@@ -386,9 +386,9 @@ static BOOL createTargetDir(NSString *targetDir, NSFileManager *fileManager) {
 }
 - (void)pasteTo:(DirectoryItem *)targetDir {
 	NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-	NSArray *classes = [NSArray arrayWithObject:[NSURL class]];
+	NSArray *classes = @[[NSURL class]];
 	NSDictionary *options = [NSDictionary dictionaryWithObject:
-							 [NSNumber numberWithBool:YES] forKey:NSPasteboardURLReadingFileURLsOnlyKey];
+							 @(YES) forKey:NSPasteboardURLReadingFileURLsOnlyKey];
 	NSArray *fileURLs = [pasteboard readObjectsForClasses:classes options:options];
 	// First check for Existing Target (needs to run on main thread for Alert)
 	NSMutableArray *newFileURLs = [NSMutableArray arrayWithCapacity:[fileURLs count]];
@@ -438,7 +438,7 @@ static BOOL createTargetDir(NSString *targetDir, NSFileManager *fileManager) {
 			NSString *prompt = [NSString stringWithFormat:@"%@ already exists.", newName];
 			NSAlert *exists = [NSAlert new];
 			[exists setMessageText:prompt];
-			[exists setAlertStyle:NSWarningAlertStyle];
+			[exists setAlertStyle:NSAlertStyleWarning];
 			[exists addButtonWithTitle:@"OK"];
 			[exists runModal];
 		}
@@ -453,7 +453,7 @@ static BOOL createTargetDir(NSString *targetDir, NSFileManager *fileManager) {
 	[renamePanel setTitle:@"Rename Tagged Files"];
 	[renamePanel setFrom:[NSString stringWithFormat:@"%ld tagged Files", [objects count]]];
 	[renamePanel setFilename:self.renameMask];
-	if ([renamePanel runModal] == NSOKButton) {
+	if ([renamePanel runModal] == NSModalResponseOK) {
 		[self setRenameMask:[renamePanel filename]];	// Update saved mask
 		[self.delegate treeViewController:self pauseRefresh:YES];
 		for (FileItem *node in objects) {
@@ -471,7 +471,7 @@ static BOOL createTargetDir(NSString *targetDir, NSFileManager *fileManager) {
 		[renamePanel setTitle:@"Rename File"];
 	else
 		[renamePanel setTitle:@"Rename Directory"];
-	if ([renamePanel runModal] == NSOKButton) {
+	if ([renamePanel runModal] == NSModalResponseOK) {
 		[self.delegate treeViewController:self pauseRefresh:YES];
 		[self renameSingle: node];
 		[self.delegate treeViewController:self pauseRefresh:NO];

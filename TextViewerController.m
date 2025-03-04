@@ -196,7 +196,7 @@ BOOL lionSupport(void) {
 
 - (BOOL)keyPressedInTextView:(NSEvent *)theEvent {
 	unichar keyChar = [[theEvent charactersIgnoringModifiers] characterAtIndex:0];
-	if ([theEvent modifierFlags] & NSCommandKeyMask) {
+	if ([theEvent modifierFlags] & NSEventModifierFlagCommand) {
         if (keyChar == 'a') {
             [myTextView doCommandBySelector:@selector(selectAll:)];
             return YES;
@@ -215,7 +215,7 @@ BOOL lionSupport(void) {
 #else
 		[searchPanel allowRegex:YES];
 #endif
-        if ([searchPanel runModal] == NSOKButton) {
+        if ([searchPanel runModal] == NSModalResponseOK) {
             if(searchPanel.searchString)
                 [self searchFirst:searchPanel.searchString regexSearch:searchPanel.regexSearch caseSensitive:searchPanel.isCaseSensitive];
         }

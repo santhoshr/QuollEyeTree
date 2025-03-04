@@ -22,12 +22,12 @@
 }
 - (IBAction)performFilter:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSOKButton];
+	[NSApp stopModalWithCode:NSModalResponseOK];
 }
 
 - (IBAction)cancelFilter:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSCancelButton];
+	[NSApp stopModalWithCode:NSModalResponseCancel];
 }
 
 - (NSInteger)runModal {

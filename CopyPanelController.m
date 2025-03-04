@@ -19,11 +19,11 @@
 }
 - (IBAction)cancelCopy:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSCancelButton];
+	[NSApp stopModalWithCode:NSModalResponseCancel];
 }
 - (IBAction)performCopy:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSOKButton];
+	[NSApp stopModalWithCode:NSModalResponseOK];
 }
 - (NSInteger)runModal {
 	[self.destComboBox setObjectValue:[self.destComboBox objectValueOfSelectedItem]];

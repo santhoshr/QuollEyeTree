@@ -18,11 +18,11 @@
 }
 - (IBAction)cancelCompare:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSCancelButton];
+	[NSApp stopModalWithCode:NSModalResponseCancel];
 }
 - (IBAction)performCompare:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSOKButton];
+	[NSApp stopModalWithCode:NSModalResponseOK];
 }
 
 - (IBAction)targetDirSelected:(id)sender {

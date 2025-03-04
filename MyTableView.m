@@ -20,17 +20,17 @@
 }
 - (void)keyDown:(NSEvent *)theEvent {
 	unichar keyChar = [[theEvent charactersIgnoringModifiers] characterAtIndex:0];
-	if ([theEvent modifierFlags] & NSCommandKeyMask) {
+	if ([theEvent modifierFlags] & NSEventModifierFlagCommand) {
 		if([self.keyDelegate respondsToSelector:@selector(keyCmdPressedInTableView:)])
 			if([self.keyDelegate keyCmdPressedInTableView:keyChar])
 				return;
 	}
-	if ([theEvent modifierFlags] & NSControlKeyMask) {
+	if ([theEvent modifierFlags] & NSEventModifierFlagControl) {
 		if([self.keyDelegate respondsToSelector:@selector(keyCtlPressedInTableView:)])
 			if([self.keyDelegate keyCtlPressedInTableView:keyChar])
 				return;
 	}
-	if ([theEvent modifierFlags] & NSAlternateKeyMask) {
+	if ([theEvent modifierFlags] & NSEventModifierFlagOption) {
 		if([self.keyDelegate respondsToSelector:@selector(keyAltPressedInTableView:)])
 			if([self.keyDelegate keyAltPressedInTableView:keyChar])
 				return;

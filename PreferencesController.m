@@ -149,7 +149,7 @@ NSArray *sortColumns;
 
 #pragma mark -
 - (void)awakeFromNib {
-	sortColumns = [NSArray arrayWithObjects:COLUMNID_NAME, COLUMNID_SIZE, COLUMNID_DATE, nil];
+	sortColumns = @[COLUMNID_NAME, COLUMNID_SIZE, COLUMNID_DATE, ];
 	[self.sort selectCellWithTag:[sortColumns indexOfObject:[[NSUserDefaults standardUserDefaults] stringForKey:PREF_SORT_FIELD]]];
 	[self.ascending setState:[[NSUserDefaults standardUserDefaults]boolForKey:PREF_SORT_DIRECTION]];
 	[self.iconDir setState:[[NSUserDefaults standardUserDefaults]boolForKey:PREF_DIRECTORY_ICON]];

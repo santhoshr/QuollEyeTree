@@ -19,11 +19,11 @@
 
 - (IBAction)cancelBatch:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSCancelButton];
+	[NSApp stopModalWithCode:NSModalResponseCancel];
 }
 - (IBAction)performBatch:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSOKButton];
+	[NSApp stopModalWithCode:NSModalResponseOK];
 }
 - (IBAction)editCmdSelected:(id)sender {
 	[[NSUserDefaults standardUserDefaults]

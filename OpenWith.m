@@ -15,7 +15,7 @@
 	NSInteger idx = [_openWithMenu indexOfItem:sender];
 	if(idx > 1) idx -= 2;
 	NSURL *foundApp = [openWithApplications objectAtIndex:idx];
-	NSArray *itemURLs = [NSArray arrayWithObject:urlToOpen];
+	NSArray *itemURLs = @[urlToOpen];
 	LSLaunchURLSpec inLaunchSpec;
 	inLaunchSpec.appURL = (__bridge CFURLRef)foundApp;
 	inLaunchSpec.itemURLs = (__bridge CFArrayRef)itemURLs;

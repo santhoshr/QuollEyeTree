@@ -24,7 +24,7 @@
 			sum += [n intValue];
 		}
 	}
-    return [NSNumber numberWithInt:sum];
+    return @(sum);
 }
 
 @end

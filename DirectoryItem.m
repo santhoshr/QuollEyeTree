@@ -56,7 +56,7 @@ static NSArray *properties = nil;
 
 + (void)loadPreferences {
 	// Read default sortDescriptor from Preferences
-	fileSortDescriptor = [NSArray arrayWithObject:[[NSSortDescriptor alloc]
+	fileSortDescriptor = @[[[NSSortDescriptor alloc]
                                                    initWithKey:[[NSUserDefaults standardUserDefaults] stringForKey:PREF_SORT_FIELD]
                                                    ascending:[[NSUserDefaults standardUserDefaults] boolForKey:PREF_SORT_DIRECTION] ]];
 	showHiddenFiles = [[NSUserDefaults standardUserDefaults] boolForKey:PREF_HIDDEN_FILES];

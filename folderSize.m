@@ -7,7 +7,7 @@
 NSNumber *folderSize(NSURL *directoryToScan) {
     NSFileManager *localFileManager=[[NSFileManager alloc] init];
     NSDirectoryEnumerator *dirEnumerator = [localFileManager enumeratorAtURL:directoryToScan
-												  includingPropertiesForKeys:[NSArray arrayWithObjects:NSURLFileSizeKey, nil]
+												  includingPropertiesForKeys:@[NSURLFileSizeKey, ]
 																	 options:0
 																errorHandler:nil];
 	NSNumber *size;

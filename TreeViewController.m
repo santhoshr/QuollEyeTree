@@ -64,12 +64,10 @@ NSPredicate *notEmptyPredicate;
 	yesPredicate = [NSPredicate predicateWithValue:YES];
 	tagPredicate = [NSPredicate predicateWithFormat:@"SELF.tag == YES"];
     notEmptyPredicate = [NSPredicate predicateWithFormat:@"(SELF.fileSize > 0) AND (SELF.isPackage == NO)"];
-	[NSApp registerServicesMenuSendTypes:[NSArray arrayWithObjects:(__bridge NSString *)kUTTypeDirectory,
-										  (__bridge NSString *)kUTTypeFileURL,
-										  nil]
-							 returnTypes:[NSArray arrayWithObjects:(__bridge NSString *)kUTTypeDirectory,
-										  (__bridge NSString *)kUTTypeFileURL,
-										  nil]];
+[NSApp registerServicesMenuSendTypes:@[(__bridge NSString *)kUTTypeDirectory,
+                                      (__bridge NSString *)kUTTypeFileURL]
+                        returnTypes:@[(__bridge NSString *)kUTTypeDirectory,
+                                    (__bridge NSString *)kUTTypeFileURL]];
 }
 - (void)setRoot {
 	[self setTreeRootNode:[self.selectedDir rootDir]];
@@ -92,14 +90,14 @@ NSPredicate *notEmptyPredicate;
 - (void)setPanel {
 	NSArray *selection = [self.arrayController selectedObjects];
 	if ([selection count] == 1) {
-		[self.delegate treeViewController:self setPanelData:[NSArray arrayWithObject:[selection objectAtIndex:0]]];
+		[self.delegate treeViewController:self setPanelData:@[[selection objectAtIndex:0]]];
 	}
 }
 
 #pragma mark Toolbar Button Actions
 - (void)segControlClicked:(id)sender {
-    int clickedSegment = [sender selectedSegment];
-    int clickedSegmentTag = [[sender cell] tagForSegment:clickedSegment];
+    NSInteger clickedSegment = [sender selectedSegment];
+    NSInteger clickedSegmentTag = [[sender cell] tagForSegment:clickedSegment];
 	switch (clickedSegmentTag) {
 		case 0:	// left - return to root directory
 			[self setRoot];
@@ -122,7 +120,7 @@ NSPredicate *notEmptyPredicate;
 	if (filePredicate == yesPredicate)	filePredicate = nil;
 	[self.fileList setUsesAlternatingRowBackgroundColors:filePredicate && !inBranch];
 	if(showOnlyTagged && filePredicate) {
-        [self.arrayController setFilterPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:filePredicate, tagPredicate, nil]]];
+        [self.arrayController setFilterPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[filePredicate, tagPredicate]]];
 	} else	if(showOnlyTagged) {
         [self.arrayController setFilterPredicate:tagPredicate];
 	} else
@@ -131,7 +129,7 @@ NSPredicate *notEmptyPredicate;
 }
 #pragma mark  Selectors
 - (void)dClickPath:(id)sender {
-    NSString *pp = [[[sender clickedPathComponentCell] URL] path];
+    NSString *pp = [[[sender clickedPathItem] URL] path];
     DirectoryItem *targetDir = findPathInVolumes(pp);
     [self restoreSplitView];    // back to normal Dir view if necessary
     [self setTreeRootNode:targetDir];
@@ -183,8 +181,8 @@ NSPredicate *notEmptyPredicate;
     NSMutableArray *columnOrder = [NSMutableArray arrayWithCapacity:[tables count]];
     for (col in tables) {
         identifier = [[col headerCell] title];
-        [columnWidths setObject:[NSNumber numberWithFloat:[col width]] forKey:identifier];
-        [columnHidden setValue:[NSNumber numberWithBool:[col isHidden]] forKey:identifier];
+        [columnWidths setObject:@([col width]) forKey:identifier];
+        [columnHidden setValue:@([col isHidden]) forKey:identifier];
         [columnOrder addObject:[col identifier]];
     }
 	if (self.sidebyside) {
@@ -202,8 +200,8 @@ NSPredicate *notEmptyPredicate;
     columnHidden = [NSMutableDictionary dictionaryWithCapacity:[tables count]];
     columnOrder = [NSMutableArray arrayWithCapacity:[tables count]];
     for (col in tables) {
-        [columnWidths setObject:[NSNumber numberWithFloat:[col width]] forKey:[[col headerCell] title]];
-        [columnHidden setValue:[NSNumber numberWithBool:[col isHidden]] forKey:[[col headerCell] title]];
+        [columnWidths setObject:@([col width]) forKey:[[col headerCell] title]];
+        [columnHidden setValue:@([col isHidden]) forKey:[[col headerCell] title]];
         [columnOrder addObject:[col identifier]];
     }
 	if (self.sidebyside) {
@@ -429,7 +427,7 @@ NSPredicate *notEmptyPredicate;
 -(void)menuWillOpen:(NSMenu *)menu {
 	for (NSMenuItem *mi in menu.itemArray) {
 		NSTableColumn *col = [mi representedObject];
-		[mi setState:col.isHidden ? NSOffState : NSOnState];
+		[mi setState:col.isHidden ? NSControlStateValueOff : NSControlStateValueOn];
 	}
 }
 
@@ -515,7 +513,7 @@ NSPredicate *notEmptyPredicate;
 - (void)copyToPasteboard:(id)object {
 	NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
 	[pasteboard clearContents];
-	NSArray *objectsToCopy = [NSArray arrayWithObject:object];
+	NSArray *objectsToCopy = @[object];
     [pasteboard writeObjects:objectsToCopy];
 }
 

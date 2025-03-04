@@ -123,7 +123,7 @@ void getAllMatching(DirectoryItem *source, DirectoryItem *target, NSMutableArray
 
 	NSInteger n = [self.delegate currentTab] + 1;
 	[comparePanel setSelectedTarget:n];
-	if ([comparePanel runModal] == NSOKButton) {
+	if ([comparePanel runModal] == NSModalResponseOK) {
 		DirectoryItem *targetDir = findPathInVolumes(comparePanel.targetDirectory);
 		if (targetDir) {
 			if (![targetDir isPathLoaded]) {
@@ -193,7 +193,7 @@ void getAllMatching(DirectoryItem *source, DirectoryItem *target, NSMutableArray
 	[folderPanel setFrom:self.selectedDir.relativePath];
 	[folderPanel setFilename:@"New Folder"];
 
-	if ([folderPanel runModal] == NSOKButton) {
+	if ([folderPanel runModal] == NSModalResponseOK) {
 		[self.delegate treeViewController:self pauseRefresh:YES];
 		NSError *error = nil;
 		NSString *newName = [folderPanel filename];
@@ -208,7 +208,7 @@ void getAllMatching(DirectoryItem *source, DirectoryItem *target, NSMutableArray
 				NSString *prompt = [NSString stringWithFormat:@"%@ already exists.", newName];
 				NSAlert *exists = [NSAlert new];
 				[exists setMessageText:prompt];
-				[exists setAlertStyle:NSWarningAlertStyle];
+				[exists setAlertStyle:NSAlertStyleWarning];
 				[exists addButtonWithTitle:@"OK"];
 				[exists runModal];
 			}
@@ -233,7 +233,7 @@ void getAllMatching(DirectoryItem *source, DirectoryItem *target, NSMutableArray
 	[self.delegate treeViewController:self pauseRefresh:YES];
 	DirectoryItem *dir = self.selectedDir;
 	NSString *dirToRemove = [dir fullPath];	// item to delete
-	NSArray *dirsToDelete = [NSArray arrayWithObject:dir.url];
+	NSArray *dirsToDelete = @[dir.url];
   	[[NSWorkspace sharedWorkspace] recycleURLs:dirsToDelete
 							 completionHandler:^(NSDictionary *newURLs, NSError *error) {
 								 if (error == nil) {
@@ -279,7 +279,7 @@ void getAllMatching(DirectoryItem *source, DirectoryItem *target, NSMutableArray
 		item = [self.dirTree itemAtRow:[self.dirTree selectedRow]];
 	else
 		item = (DirectoryItem *)[self.dirTree focusedItem];
-	[[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:[NSArray arrayWithObject:item.url]];
+	[[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[item.url]];
 }
 - (IBAction)openDirInNewTab:(id)sender {	// context only
     DirectoryItem *item = (DirectoryItem *)[self.dirTree focusedItem];
@@ -342,34 +342,34 @@ void getAllMatching(DirectoryItem *source, DirectoryItem *target, NSMutableArray
 
 #pragma mark NSPathControl Menu Actions
 - (IBAction)copyPath:(id)sender {	// context & menu
-	NSURL *url = [[self.currentPath clickedPathComponentCell] URL];
+	NSURL *url = [[self.currentPath clickedPathItem] URL];
 	[self copyToPasteboard:url];
 }
 - (IBAction)copyPathToClipboard:(id)sender {	// context only
-	NSURL *url = [[self.currentPath clickedPathComponentCell] URL];
+	NSURL *url = [[self.currentPath clickedPathItem] URL];
 	[self copyToPasteboard:url.path];
 }
 - (IBAction)openPath:(id)sender {	// context & menu
-	NSURL *url = [[self.currentPath clickedPathComponentCell] URL];
+	NSURL *url = [[self.currentPath clickedPathItem] URL];
 	LSOpenCFURLRef((__bridge CFURLRef)url, nil);
 }
 - (IBAction)revealPathInFinder:(id)sender {	// context & menu
-	NSURL *url = [[self.currentPath clickedPathComponentCell] URL];
-	[[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:[NSArray arrayWithObject:url]];
+	NSURL *url = [[self.currentPath clickedPathItem] URL];
+	[[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[url]];
 }
 - (IBAction)openPathInNewTab:(id)sender {	// context only
-	NSURL *url = [[self.currentPath clickedPathComponentCell] URL];
+	NSURL *url = [[self.currentPath clickedPathItem] URL];
 	[self.delegate treeViewController:self addNewTabAtDir:findPathInVolumes(url.path)];
 }
 - (IBAction)openPathInTerminal:(id)sender {	// context only
-	NSURL *url = [[self.currentPath clickedPathComponentCell] URL];
+	NSURL *url = [[self.currentPath clickedPathItem] URL];
 	NSString *s = [NSString stringWithFormat:
 				   @"tell application \"Terminal\" to do script \"cd \'%@\'\"", url.path];
 	NSAppleScript *as = [[NSAppleScript alloc] initWithSource: s];
 	[as executeAndReturnError:nil];
 }
 - (IBAction)getPathInfo:(id)sender {	// context & menu
-	NSURL *url = [[self.currentPath clickedPathComponentCell] URL];
+	NSURL *url = [[self.currentPath clickedPathItem] URL];
 	NSString *s = [NSString stringWithFormat:
 				   @"tell application \"Finder\"\n"
                    "open information window of %@  POSIX file \"%@\"\n"
@@ -498,7 +498,7 @@ void getAllMatching(DirectoryItem *source, DirectoryItem *target, NSMutableArray
 #pragma mark - NSOutlineViewDelegate Protocol methods
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldExpandItem:(id)item {
 	if(currentlyLogging)	return NO;
-    if([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) {
+    if([[NSApp currentEvent] modifierFlags] & NSEventModifierFlagOption) {
         [self expandBranch:item];
 		return NO;
 	}
@@ -517,8 +517,8 @@ void getAllMatching(DirectoryItem *source, DirectoryItem *target, NSMutableArray
 					if ([NSImage respondsToSelector:@selector(imageWithSize:flipped:drawingHandler:)]) {
 						NSImage *badgedFileIcon = [NSImage imageWithSize:fileIcon.size flipped:NO
 														  drawingHandler:^BOOL (NSRect dstRect){
-															  [fileIcon drawAtPoint:dstRect.origin fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
-															  [aliasBadge drawAtPoint:dstRect.origin fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
+															  [fileIcon drawAtPoint:dstRect.origin fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1];
+															  [aliasBadge drawAtPoint:dstRect.origin fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1];
 															  return YES;
 														  }];
 						[item setNodeIcon:badgedFileIcon];
@@ -539,7 +539,7 @@ void getAllMatching(DirectoryItem *source, DirectoryItem *target, NSMutableArray
 }
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldTypeSelectForEvent:(NSEvent *)event withCurrentSearchString:(NSString *)searchString {
 	unichar keyChar = [[event charactersIgnoringModifiers] characterAtIndex:0];
-	if(([event modifierFlags] & NSShiftKeyMask) == NSShiftKeyMask && [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:keyChar])
+	if(([event modifierFlags] & NSEventModifierFlagShift) == NSEventModifierFlagShift && [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:keyChar])
 		return YES;
 	if([[NSCharacterSet decimalDigitCharacterSet] characterIsMember:keyChar])
 		return YES;

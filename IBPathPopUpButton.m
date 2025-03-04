@@ -61,7 +61,7 @@
     [openPanel setPrompt:@"Choose folder"];
     [openPanel setCanChooseFiles:NO];
 	NSInteger result = [NSApp runModalForWindow:openPanel];
-    if(result == NSOKButton) {
+    if(result == NSModalResponseOK) {
         [self insertPopUpPath:[[[openPanel URLs] objectAtIndex:0] path]];
     }
     else

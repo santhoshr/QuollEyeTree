@@ -31,11 +31,11 @@
 }
 - (IBAction)cancelCompare:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSCancelButton];
+	[NSApp stopModalWithCode:NSModalResponseCancel];
 }
 - (IBAction)performCompare:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSOKButton];
+	[NSApp stopModalWithCode:NSModalResponseOK];
 }
 - (IBAction)contentCompare:(id)sender {
 	NSInteger selectedCell = [[sender selectedCell] tag];

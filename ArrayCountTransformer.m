@@ -22,7 +22,7 @@
     NSUInteger result = 0;
     if ([value isKindOfClass:[NSArray class]])
         result = [value count];
-    return [NSNumber numberWithInt:result];
+    return @(result);
 }
 
 @end

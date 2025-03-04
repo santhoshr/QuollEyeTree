@@ -19,13 +19,13 @@
 }
 - (IBAction)cancelGoTo:(id)sender {
 	[self close];
-	[NSApp stopModalWithCode:NSCancelButton];
+	[NSApp stopModalWithCode:NSModalResponseCancel];
 }
 - (IBAction)performGoTo:(id)sender {
     [path setStringValue:[[[path stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] stringByExpandingTildeInPath]];
     if([[NSFileManager defaultManager] fileExistsAtPath:self.directory]) {
         [self close];
-        [NSApp stopModalWithCode:NSOKButton];
+        [NSApp stopModalWithCode:NSModalResponseOK];
         return;
     }
     [notFound setHidden:NO];

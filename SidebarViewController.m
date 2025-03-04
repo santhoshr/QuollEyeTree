@@ -210,7 +210,7 @@ void volumeEvents_callback(ConstFSEventStreamRef streamRef,
 }
 // Watch /Volumes for changes
 - (void)initializeVolumeMonitoring {
-    NSArray *pathsToWatch = [NSArray arrayWithObject:@"/Volumes"];
+    NSArray *pathsToWatch = @[@"/Volumes"];
     void *appPointer = (__bridge void *)self;
     FSEventStreamContext context = {0, appPointer, NULL, NULL, NULL};
     NSTimeInterval latency = 3.0;
@@ -278,7 +278,7 @@ void volumeEvents_callback(ConstFSEventStreamRef streamRef,
 - (BOOL)outlineView:(NSOutlineView *)ov writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard {
 	if ([[[items objectAtIndex:0] representedObject] path] == nil) return NO;	// don't allow folders to be dragged
 	if ([[[items objectAtIndex:0] indexPath] indexPathByRemovingLastIndex] == devices) return NO;	// don't allow devices to be dragged
-	[pboard declareTypes:[NSArray arrayWithObjects:kNodesPBoardType, nil] owner:self];
+	[pboard declareTypes:@[kNodesPBoardType, ] owner:self];
 	self.dragNodesArray = items;	// keep track of this node for drag feedback in "validateDrop"
 	return YES;
 }
@@ -331,7 +331,7 @@ void volumeEvents_callback(ConstFSEventStreamRef streamRef,
 	if (targetItem) {
 		NSIndexPath *indexPath = [[targetItem indexPath] indexPathByAddingIndex:index];	// find the index path to insert our dropped object
 		NSPasteboard *pboard = [info draggingPasteboard];	// get the pasteboard
-		if ([pboard availableTypeFromArray:[NSArray arrayWithObject:kNodesPBoardType]]) {
+		if ([pboard availableTypeFromArray:@[kNodesPBoardType]]) {
 			[self handleInternalDrops:pboard withIndexPath:indexPath];	// intra-app drag within the outline view
 			result = YES;
 		}
