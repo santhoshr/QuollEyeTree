@@ -328,11 +328,16 @@ void getAllMatching(DirectoryItem *source, DirectoryItem *target, NSMutableArray
 }
 - (IBAction)setNewRoot:(id)sender {
     DirectoryItem *item;
-    if ([sender isKindOfClass:[MyWindowController class]])
-		item = [self.dirTree itemAtRow:[self.dirTree selectedRow]];
-	else
-		item = (DirectoryItem *)[self.dirTree focusedItem];
-	[self setTreeRootNode:item];
+    if ([sender isKindOfClass:[MyWindowController class]] || [sender isKindOfClass:[TreeViewController class]]) {
+        item = [self.dirTree itemAtRow:[self.dirTree selectedRow]];
+    } else {
+        item = (DirectoryItem *)[self.dirTree focusedItem];
+    }
+    // If no item is selected or focused, use root folder
+    if (!item) {
+        item = [self treeRootNode];
+    }
+    [self setTreeRootNode:item];
 }
 
 #pragma mark NSPathControl Menu Actions
