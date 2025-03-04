@@ -17,7 +17,7 @@
 @class SidebarViewController;
 @class DirectoryItem;
 
-@interface MyWindowController : NSWindowController <NSToolbarDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, TreeViewControllerDelegate, SidebarViewControllerDelegate, SFTabViewDelegate, DeletedItemsDelegate> {
+@interface MyWindowController : NSWindowController <NSToolbarDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate, TreeViewControllerDelegate, SidebarViewControllerDelegate, SFTabViewDelegate, DeletedItemsDelegate, NSWindowDelegate, NSTabViewDelegate> {
 	IBOutlet NSButton *showTagged;
 	IBOutlet NSMenu *fileMenu;
 	IBOutlet NSMenu *dirMenu;

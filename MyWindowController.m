@@ -158,6 +158,7 @@ NSOperationQueue *loggingQueue = nil;
 }
 - (id)initWithWindowNibName:(NSString *)windowNibName {
 	if( self = [super initWithWindowNibName:windowNibName]) {
+        NSLog(@"MyWindowController: Initializing with nib %@", windowNibName);
 		// viewMap maintains a relationship between View and Tab (cannot use NSDictionary)
 		viewMap = [NSMapTable mapTableWithKeyOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality
 										valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality];
@@ -173,8 +174,52 @@ NSOperationQueue *loggingQueue = nil;
         [[IBDateFormatter sharedDateFormatter] initialiseFormatters:[[NSUserDefaults standardUserDefaults]integerForKey:PREF_DATE_FORMAT]
                                                      showCreateTime:[[NSUserDefaults standardUserDefaults]boolForKey:PREF_DATE_SHOW_CREATE]
                                                     useRelativeDate:[[NSUserDefaults standardUserDefaults]boolForKey:PREF_DATE_RELATIVE]];
+        NSLog(@"MyWindowController: Initialization complete");
     }
 	return self;
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+    NSLog(@"MyWindowController: Window will close");
+    
+    // Stop monitoring before cleanup
+    [self stopMonitoring];
+    
+    // Clean up notifications
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
+    
+    // Clean up timer
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    
+    // Clean up view controllers
+    for (id key in viewMap) {
+        TreeViewController *tvc = [viewMap objectForKey:key];
+        if (tvc) {
+            [tvc suspendTreeView];
+        }
+    }
+    
+    // Clear the viewMap
+    [viewMap removeAllObjects];
+    viewMap = nil;
+    
+    // Clear references
+    currentTvc = nil;
+    previousTvc = nil;
+    sidebarController = nil;
+    previewPanel = nil;
+    panelData = nil;
+}
+
+- (void)dealloc {
+    NSLog(@"MyWindowController: Deallocating");
+    // Most cleanup is done in windowWillClose
+    // This is just a safeguard
+    if (viewMap) {
+        [viewMap removeAllObjects];
+        viewMap = nil;
+    }
 }
 
 /*! @brief This method receives Automator Action QETNotification (sent by OpeninQuollEyeTree
