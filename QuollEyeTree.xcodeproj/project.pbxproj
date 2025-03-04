@@ -30,7 +30,6 @@
 		3C25C1A916C3861A00727EE0 /* FolderPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C9AD715149C23D300AFD274 /* FolderPanel.xib */; };
 		3C25C1AA16C3861A00727EE0 /* ghostgum.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3C62EB44149C33F900E8D057 /* ghostgum.icns */; };
 		3C25C1AB16C3861A00727EE0 /* ComparePanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C6A139F14AD83C300FEBC50 /* ComparePanel.xib */; };
-		3C25C1AC16C3861A00727EE0 /* QTreeHelp.help in Resources */ = {isa = PBXBuildFile; fileRef = 3C9FBB11152D339B00BE652C /* QTreeHelp.help */; };
 		3C25C1AD16C3861A00727EE0 /* GoToPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C3664B91536BFBA005BAE4A /* GoToPanel.xib */; };
 		3C25C1AE16C3861A00727EE0 /* Filter.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CE391861578450300B85577 /* Filter.png */; };
 		3C25C1AF16C3861A00727EE0 /* SearchPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CF72BC015886BF000E63E73 /* SearchPanel.xib */; };
@@ -166,7 +165,6 @@
 		3C9C341B1C2F73F400A49977 /* FolderPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C9AD715149C23D300AFD274 /* FolderPanel.xib */; };
 		3C9C341C1C2F73F400A49977 /* ghostgum.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3C62EB44149C33F900E8D057 /* ghostgum.icns */; };
 		3C9C341D1C2F73F400A49977 /* ComparePanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C6A139F14AD83C300FEBC50 /* ComparePanel.xib */; };
-		3C9C341E1C2F73F400A49977 /* QTreeHelp.help in Resources */ = {isa = PBXBuildFile; fileRef = 3C9FBB11152D339B00BE652C /* QTreeHelp.help */; };
 		3C9C341F1C2F73F400A49977 /* GoToPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C3664B91536BFBA005BAE4A /* GoToPanel.xib */; };
 		3C9C34201C2F73F400A49977 /* Filter.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CE391861578450300B85577 /* Filter.png */; };
 		3C9C34211C2F73F400A49977 /* SearchPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CF72BC015886BF000E63E73 /* SearchPanel.xib */; };
@@ -232,7 +230,6 @@
 		3C9C345F1C2F73F400A49977 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		3C9C34601C2F73F400A49977 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4A961B1432E2AB009E488C /* Quartz.framework */; };
 		3C9C34611C2F73F400A49977 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4A961D1432E2BD009E488C /* QuickLook.framework */; };
-		3C9FBB12152D339B00BE652C /* QTreeHelp.help in Resources */ = {isa = PBXBuildFile; fileRef = 3C9FBB11152D339B00BE652C /* QTreeHelp.help */; };
 		3CA8379F1438179500FD4B86 /* TreeViewController+Dirs.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA8379E1438179500FD4B86 /* TreeViewController+Dirs.m */; };
 		3CA8392514385A0F00FD4B86 /* MyWindowController+Refresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA8392414385A0F00FD4B86 /* MyWindowController+Refresh.m */; };
 		3CB745BC14CD3FBD00DD66E7 /* OpenWith.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CB745BB14CD3FBD00DD66E7 /* OpenWith.m */; };
@@ -365,8 +362,6 @@
 		3C9AD70F149C20C000AFD274 /* FolderPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderPanelController.m; sourceTree = "<group>"; };
 		3C9AD715149C23D300AFD274 /* FolderPanel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FolderPanel.xib; sourceTree = "<group>"; };
 		3C9C34651C2F73F400A49977 /* QuollEyeTree2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuollEyeTree2.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3C9C34661C2F73F400A49977 /* QuollEyeTree copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "QuollEyeTree copy-Info.plist"; path = "/Users/ian/Projects2/QuollEyeTreeApp/QuollEyeTree/QuollEyeTree copy-Info.plist"; sourceTree = "<absolute>"; };
-		3C9FBB11152D339B00BE652C /* QTreeHelp.help */ = {isa = PBXFileReference; lastKnownFileType = folder; name = QTreeHelp.help; path = ../QTreeHelp.help; sourceTree = "<group>"; };
 		3CA8379D1438179500FD4B86 /* TreeViewController+Dirs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TreeViewController+Dirs.h"; sourceTree = "<group>"; };
 		3CA8379E1438179500FD4B86 /* TreeViewController+Dirs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TreeViewController+Dirs.m"; sourceTree = "<group>"; };
 		3CA8392314385A0F00FD4B86 /* MyWindowController+Refresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MyWindowController+Refresh.h"; sourceTree = "<group>"; };
@@ -416,6 +411,7 @@
 		3CF72BBD1588679600E63E73 /* SearchPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchPanelController.h; sourceTree = "<group>"; };
 		3CF72BBE1588679600E63E73 /* SearchPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchPanelController.m; sourceTree = "<group>"; };
 		3CF72BC015886BF000E63E73 /* SearchPanel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchPanel.xib; sourceTree = "<group>"; };
+		6E6D39982D2CEB990037B1D6 /* QuollEyeTree.profdata */ = {isa = PBXFileReference; lastKnownFileType = file; path = QuollEyeTree.profdata; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* QuollEyeTree-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "QuollEyeTree-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* QuollEyeTree.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuollEyeTree.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -527,7 +523,7 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				3C8DA21D1532618200F2D8F3 /* Products */,
-				3C9C34661C2F73F400A49977 /* QuollEyeTree copy-Info.plist */,
+				6E6D39992D2CEB990037B1D6 /* OptimizationProfiles */,
 			);
 			name = FileTestWithBindings;
 			sourceTree = "<group>";
@@ -544,7 +540,6 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				3C9FBB11152D339B00BE652C /* QTreeHelp.help */,
 				8D1107310486CEB800E47090 /* QuollEyeTree-Info.plist */,
 				3C4A99B714340708009E488C /* QuollEyeTree.pdf */,
 				3C4A998F14340084009E488C /* WhatsNew.txt */,
@@ -773,6 +768,14 @@
 			name = Volumes;
 			sourceTree = "<group>";
 		};
+		6E6D39992D2CEB990037B1D6 /* OptimizationProfiles */ = {
+			isa = PBXGroup;
+			children = (
+				6E6D39982D2CEB990037B1D6 /* QuollEyeTree.profdata */,
+			);
+			path = OptimizationProfiles;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -889,7 +892,6 @@
 				3C25C1A916C3861A00727EE0 /* FolderPanel.xib in Resources */,
 				3C25C1AA16C3861A00727EE0 /* ghostgum.icns in Resources */,
 				3C25C1AB16C3861A00727EE0 /* ComparePanel.xib in Resources */,
-				3C25C1AC16C3861A00727EE0 /* QTreeHelp.help in Resources */,
 				3C25C1AD16C3861A00727EE0 /* GoToPanel.xib in Resources */,
 				3C25C1AE16C3861A00727EE0 /* Filter.png in Resources */,
 				3C25C1AF16C3861A00727EE0 /* SearchPanel.xib in Resources */,
@@ -926,7 +928,6 @@
 				3C9C341B1C2F73F400A49977 /* FolderPanel.xib in Resources */,
 				3C9C341C1C2F73F400A49977 /* ghostgum.icns in Resources */,
 				3C9C341D1C2F73F400A49977 /* ComparePanel.xib in Resources */,
-				3C9C341E1C2F73F400A49977 /* QTreeHelp.help in Resources */,
 				3C9C341F1C2F73F400A49977 /* GoToPanel.xib in Resources */,
 				3C9C34201C2F73F400A49977 /* Filter.png in Resources */,
 				3C9C34211C2F73F400A49977 /* SearchPanel.xib in Resources */,
@@ -963,7 +964,6 @@
 				3C9AD716149C23D300AFD274 /* FolderPanel.xib in Resources */,
 				3C62EB45149C33F900E8D057 /* ghostgum.icns in Resources */,
 				3C6A13A014AD83C300FEBC50 /* ComparePanel.xib in Resources */,
-				3C9FBB12152D339B00BE652C /* QTreeHelp.help in Resources */,
 				3C3664BA1536BFBA005BAE4A /* GoToPanel.xib in Resources */,
 				3CE391871578450300B85577 /* Filter.png in Resources */,
 				3CF72BC115886BF000E63E73 /* SearchPanel.xib in Resources */,
@@ -1309,16 +1309,20 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_ENTITLEMENTS = QuollEyeTree.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
+				ENABLE_HARDENED_RUNTIME = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = QuollEyeTree_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = BETA_HEADER;
 				INFOPLIST_FILE = "QuollEyeTree-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "au.id.binnie.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = QuollEyeTree;
 				SDKROOT = macosx;
@@ -1330,14 +1334,18 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CODE_SIGN_ENTITLEMENTS = QuollEyeTree.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
+				ENABLE_HARDENED_RUNTIME = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = QuollEyeTree_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = BETA_HEADER;
 				INFOPLIST_FILE = "QuollEyeTree-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "au.id.binnie.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = QuollEyeTree;
 				SDKROOT = macosx;
@@ -1356,7 +1364,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -1372,7 +1380,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
