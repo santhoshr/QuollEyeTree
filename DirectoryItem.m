@@ -13,6 +13,9 @@
 #import "folderSize.h"
 #import "volumeForPath.h"
 
+// Replace visited paths set with visited filesystem IDs set
+static NSMutableSet *visitedFSIDs = nil;
+
 @interface DirectoryItem ()
 /*! @brief	This is the main (private) method to read the contents of a directory.
  @param	dirPath	directory
@@ -36,6 +39,11 @@
  @return DirectoryItem (if found) or nil
  */
 - (DirectoryItem *)findDir:(NSString *)dirName;
+/*! @brief Check if a directory has already been visited using filesystem IDs
+ @param path Directory path to check
+ @return YES if directory has been visited before, NO otherwise
+ */
+- (BOOL)hasVisitedDirectory:(NSString *)path;
 @end
 @implementation DirectoryItem
 @synthesize files=_files, loggedSubDirectories=_subDirectories;
@@ -54,18 +62,21 @@ static NSArray *properties = nil;
 	showHiddenFiles = [[NSUserDefaults standardUserDefaults] boolForKey:PREF_HIDDEN_FILES];
 }
 + (void)initialize {
-	leafNode = [[NSMutableArray alloc] init];
-	[self loadPreferences];
-	properties = [NSArray arrayWithObjects:
-				  NSURLNameKey,
-				  NSURLFileSizeKey, NSURLIsAliasFileKey, NSURLIsPackageKey,
-				  NSURLIsDirectoryKey, NSURLIsSymbolicLinkKey, NSURLIsRegularFileKey,
-				  NSURLCreationDateKey, NSURLContentModificationDateKey,
-				  NSURLLocalizedTypeDescriptionKey, nil];
-	dirSortDescriptor = [NSArray arrayWithObject:
-						 [[NSSortDescriptor alloc] initWithKey:COLUMNID_NAME
-													 ascending:YES
-													  selector:@selector(localizedStandardCompare:)]];
+    if (self == [DirectoryItem class]) {
+        visitedFSIDs = [NSMutableSet new];
+        leafNode = [[NSMutableArray alloc] init];
+        [self loadPreferences];
+        properties = [NSArray arrayWithObjects:
+                      NSURLNameKey,
+                      NSURLFileSizeKey, NSURLIsAliasFileKey, NSURLIsPackageKey,
+                      NSURLIsDirectoryKey, NSURLIsSymbolicLinkKey, NSURLIsRegularFileKey,
+                      NSURLCreationDateKey, NSURLContentModificationDateKey,
+                      NSURLLocalizedTypeDescriptionKey, nil];
+        dirSortDescriptor = [NSArray arrayWithObject:
+                             [[NSSortDescriptor alloc] initWithKey:COLUMNID_NAME
+                                                         ascending:YES
+                                                          selector:@selector(localizedStandardCompare:)]];
+    }
 }
 
 - (DirectoryItem *)rootDir {
@@ -231,32 +242,67 @@ static NSArray *properties = nil;
 	}
 }
 
-- (void)loadSubDirectories {
-	NSFileManager *fileManager = [NSFileManager new];
-	NSString *fPath = [self fullPath];
-	BOOL isDir;
-	NSError *error = nil;
-
-	if ([fileManager fileExistsAtPath:fPath isDirectory:&isDir]) {
-		if (isDir) {
-			// arrayUrl is contents of Directory
-			NSArray *arrayUrl = [self readDirectory:fPath error:&error];
-			if (arrayUrl) {
-				[self setFileAndDirDetails:arrayUrl];
-				return;
-			}
-			if ([error code] == NSFileReadNoPermissionError) {
-				_subDirectories = leafNode;
-				return;	// User does not have permission to read this directory
-			}
-			// This is probably a symbolic link
-		}
-			[self copyDirContent:getTarget(fPath)];	// Get target of Alias/symlink
-			return;
-	}
-	// We should never reach this point (error excepted)
-    NSLog(@"Empty? %@ ", fPath);
+- (BOOL)hasVisitedDirectory:(NSString *)path {
+    NSError *error = nil;
+    NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
+    if (error) return NO;
+    
+    // Create unique ID using device and inode numbers
+    NSString *fsID = [NSString stringWithFormat:@"%d-%llu", 
+        [[attrs objectForKey:NSFileSystemNumber] intValue],
+        [[attrs objectForKey:NSFileSystemFileNumber] unsignedLongLongValue]];
+    
+    if ([visitedFSIDs containsObject:fsID]) {
+        return YES;
+    }
+    
+    [visitedFSIDs addObject:fsID];
+    return NO;
 }
+
+- (void)loadSubDirectories {
+    @synchronized(visitedFSIDs) {
+        NSString *fPath = [self fullPath];
+        if ([self hasVisitedDirectory:fPath]) {
+            _subDirectories = leafNode;
+            return;
+        }
+        
+        NSFileManager *fileManager = [NSFileManager new];
+        BOOL isDir;
+        NSError *error = nil;
+
+        if ([fileManager fileExistsAtPath:fPath isDirectory:&isDir]) {
+            if (isDir) {
+                // arrayUrl is contents of Directory
+                NSArray *arrayUrl = [self readDirectory:fPath error:&error];
+                if (arrayUrl) {
+                    [self setFileAndDirDetails:arrayUrl];
+                    return;
+                }
+                if ([error code] == NSFileReadNoPermissionError) {
+                    _subDirectories = leafNode;
+                    return;
+                }
+            }
+            // Handle symbolic link
+            NSString *targetPath = getTarget(fPath);
+            if (targetPath) {
+                // Check if target has been visited
+                if ([self hasVisitedDirectory:targetPath]) {
+                    _subDirectories = leafNode;
+                } else {
+                    [self copyDirContent:targetPath];
+                }
+            } else {
+                _subDirectories = leafNode;
+            }
+        } else {
+            _subDirectories = leafNode;
+        }
+    }
+}
+
 - (void)logDirPlus1 {
 	NSArray *tempArray = [NSArray arrayWithArray:self.subDirectories];
 	for (DirectoryItem *dir in tempArray) {
@@ -417,6 +463,18 @@ static NSArray *properties = nil;
 - (void)releaseDir {
     @synchronized(self) {
         if(!self.isAlias) {
+            NSString *fPath = [self fullPath];
+            if (fPath) {
+                NSError *error = nil;
+                NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:fPath error:&error];
+                if (!error) {
+                    NSString *fsID = [NSString stringWithFormat:@"%d-%llu", 
+                        [[attrs objectForKey:NSFileSystemNumber] intValue],
+                        [[attrs objectForKey:NSFileSystemFileNumber] unsignedLongLongValue]];
+                    [visitedFSIDs removeObject:fsID];
+                }
+            }
+            
             NSLog(@"DirectoryItem: Releasing directory %@", self.relativePath);
             NSArray *subDirsCopy = [_subDirectories copy];
             for (DirectoryItem *subDir in subDirsCopy) {
